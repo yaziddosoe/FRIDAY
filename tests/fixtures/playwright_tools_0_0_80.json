@@ -1,0 +1,1621 @@
+[
+  {
+    "description": "Close the page",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_close"
+  },
+  {
+    "description": "Resize the browser window",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "description": "Height of the browser window",
+          "type": "number"
+        },
+        "width": {
+          "description": "Width of the browser window",
+          "type": "number"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "type": "object"
+    },
+    "name": "browser_resize"
+  },
+  {
+    "description": "Get the final resolved config after merging CLI options, environment variables and config file.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_get_config"
+  },
+  {
+    "description": "Returns all console messages",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "all": {
+          "description": "Return all console messages since the beginning of the session, not just since the last navigation. Defaults to false.",
+          "type": "boolean"
+        },
+        "filename": {
+          "description": "Filename to save the console messages to. If not provided, messages are returned as text.",
+          "type": "string"
+        },
+        "level": {
+          "default": "info",
+          "description": "Level of the console messages to return. Each level includes the messages of more severe levels. Defaults to \"info\".",
+          "enum": [
+            "error",
+            "warning",
+            "info",
+            "debug"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "level"
+      ],
+      "type": "object"
+    },
+    "name": "browser_console_messages"
+  },
+  {
+    "description": "List all cookies (optionally filtered by domain/path)",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "description": "Filter cookies by domain",
+          "type": "string"
+        },
+        "path": {
+          "description": "Filter cookies by path",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_cookie_list"
+  },
+  {
+    "description": "Get a specific cookie by name",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Cookie name to get",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "name": "browser_cookie_get"
+  },
+  {
+    "description": "Set a cookie with optional flags (domain, path, expires, httpOnly, secure, sameSite)",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "description": "Cookie domain",
+          "type": "string"
+        },
+        "expires": {
+          "description": "Cookie expiration as Unix timestamp",
+          "type": "number"
+        },
+        "httpOnly": {
+          "description": "Whether the cookie is HTTP only",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "Cookie name",
+          "type": "string"
+        },
+        "path": {
+          "description": "Cookie path",
+          "type": "string"
+        },
+        "sameSite": {
+          "description": "Cookie SameSite attribute",
+          "enum": [
+            "Strict",
+            "Lax",
+            "None"
+          ],
+          "type": "string"
+        },
+        "secure": {
+          "description": "Whether the cookie is secure",
+          "type": "boolean"
+        },
+        "value": {
+          "description": "Cookie value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "type": "object"
+    },
+    "name": "browser_cookie_set"
+  },
+  {
+    "description": "Delete a specific cookie",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Cookie name to delete",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "name": "browser_cookie_delete"
+  },
+  {
+    "description": "Clear all cookies",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_cookie_clear"
+  },
+  {
+    "description": "Resume script execution after it was paused. When called with step set to true, execution will pause again before the next action.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "description": "Pause execution at a specific <file>:<line>, e.g. \"example.spec.ts:42\".",
+          "type": "string"
+        },
+        "step": {
+          "description": "When true, execution will pause again before the next action, allowing step-by-step debugging.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_resume"
+  },
+  {
+    "description": "Show a persistent highlight overlay around the element on the page.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "style": {
+          "description": "Additional inline CSS applied to the highlight overlay, e.g. \"outline: 2px dashed red\".",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "type": "object"
+    },
+    "name": "browser_highlight"
+  },
+  {
+    "description": "Remove a highlight overlay previously added for the element.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used when adding the highlight; must match the value passed to browser_highlight.",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_hide_highlight"
+  },
+  {
+    "description": "Open the Playwright Dashboard in annotation mode for the current page and wait for the user to draw annotations. Returns the annotated screenshot, ARIA snapshot, and the list of annotations.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_annotate"
+  },
+  {
+    "description": "Handle a dialog",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "accept": {
+          "description": "Whether to accept the dialog.",
+          "type": "boolean"
+        },
+        "promptText": {
+          "description": "The text of the prompt in case of a prompt dialog.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "accept"
+      ],
+      "type": "object"
+    },
+    "name": "browser_handle_dialog"
+  },
+  {
+    "description": "Evaluate JavaScript expression on page or element",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "filename": {
+          "description": "Filename to save the result to. If not provided, result is returned as text.",
+          "type": "string"
+        },
+        "function": {
+          "description": "() => { /* code */ } or (element) => { /* code */ } when element is provided",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "function"
+      ],
+      "type": "object"
+    },
+    "name": "browser_evaluate"
+  },
+  {
+    "description": "Upload one or multiple files",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "paths": {
+          "description": "The absolute paths to the files to upload. Can be single file or multiple files. If omitted, file chooser is cancelled.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_file_upload"
+  },
+  {
+    "description": "Drop files or MIME-typed data onto an element, as if dragged from outside the page. At least one of \"paths\" or \"data\" must be provided.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Data to drop, as a map of MIME type to string value (e.g. {\"text/plain\": \"hello\", \"text/uri-list\": \"https://example.com\"}).",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "paths": {
+          "description": "Absolute paths to files to drop onto the element.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "type": "object"
+    },
+    "name": "browser_drop"
+  },
+  {
+    "description": "Search the accessibility snapshot of the current page for text or a regular expression. Returns matching snapshot nodes with a few lines of surrounding context (like search snippets), each shown under its path from the root of the tree, which is cheaper than capturing the whole snapshot when you only need to locate an element and its ref.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "regex": {
+          "description": "Regular expression to search for in the page snapshot. Matching is case-sensitive by default; wrap the pattern in slashes to add flags, e.g. \"/error/i\" for case-insensitive. Provide either text or regex, not both.",
+          "type": "string"
+        },
+        "text": {
+          "description": "Plain text to search for in the page snapshot (case-insensitive substring match). Provide either text or regex, not both.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_find"
+  },
+  {
+    "description": "Fill multiple form fields",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "description": "Fields to fill in",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "element": {
+                "description": "Human-readable element description used to obtain permission to interact with the element",
+                "type": "string"
+              },
+              "name": {
+                "description": "Human-readable field name",
+                "type": "string"
+              },
+              "target": {
+                "description": "Exact target element reference from the page snapshot, or a unique element selector",
+                "type": "string"
+              },
+              "type": {
+                "description": "Type of the field",
+                "enum": [
+                  "textbox",
+                  "checkbox",
+                  "radio",
+                  "combobox",
+                  "slider"
+                ],
+                "type": "string"
+              },
+              "value": {
+                "description": "Value to fill in the field. If the field is a checkbox, the value should be `true` or `false`. If the field is a combobox, the value should be the text of the option.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "target",
+              "name",
+              "type",
+              "value"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "fields"
+      ],
+      "type": "object"
+    },
+    "name": "browser_fill_form"
+  },
+  {
+    "description": "Press a key on the keyboard",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Name of the key to press or a character to generate, such as `ArrowLeft` or `a`",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "name": "browser_press_key"
+  },
+  {
+    "description": "Type text into editable element",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "slowly": {
+          "description": "Whether to type one character at a time. Useful for triggering key handlers in the page. By default entire text is filled in at once.",
+          "type": "boolean"
+        },
+        "submit": {
+          "description": "Whether to submit entered text (press Enter after)",
+          "type": "boolean"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text to type into the element",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target",
+        "text"
+      ],
+      "type": "object"
+    },
+    "name": "browser_type"
+  },
+  {
+    "description": "Move mouse to a given position",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "description": "X coordinate",
+          "type": "number"
+        },
+        "y": {
+          "description": "Y coordinate",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "type": "object"
+    },
+    "name": "browser_mouse_move_xy"
+  },
+  {
+    "description": "Click mouse button at a given position",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "button": {
+          "description": "Button to click, defaults to left",
+          "enum": [
+            "left",
+            "right",
+            "middle"
+          ],
+          "type": "string"
+        },
+        "clickCount": {
+          "description": "Number of clicks, defaults to 1",
+          "type": "number"
+        },
+        "delay": {
+          "description": "Time to wait between mouse down and mouse up in milliseconds, defaults to 0",
+          "type": "number"
+        },
+        "x": {
+          "description": "X coordinate",
+          "type": "number"
+        },
+        "y": {
+          "description": "Y coordinate",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "type": "object"
+    },
+    "name": "browser_mouse_click_xy"
+  },
+  {
+    "description": "Drag left mouse button to a given position",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "endX": {
+          "description": "End X coordinate",
+          "type": "number"
+        },
+        "endY": {
+          "description": "End Y coordinate",
+          "type": "number"
+        },
+        "startX": {
+          "description": "Start X coordinate",
+          "type": "number"
+        },
+        "startY": {
+          "description": "Start Y coordinate",
+          "type": "number"
+        }
+      },
+      "required": [
+        "startX",
+        "startY",
+        "endX",
+        "endY"
+      ],
+      "type": "object"
+    },
+    "name": "browser_mouse_drag_xy"
+  },
+  {
+    "description": "Press mouse down",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "button": {
+          "description": "Button to press, defaults to left",
+          "enum": [
+            "left",
+            "right",
+            "middle"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_mouse_down"
+  },
+  {
+    "description": "Press mouse up",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "button": {
+          "description": "Button to press, defaults to left",
+          "enum": [
+            "left",
+            "right",
+            "middle"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_mouse_up"
+  },
+  {
+    "description": "Scroll mouse wheel",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "deltaX": {
+          "default": 0,
+          "description": "X delta",
+          "type": "number"
+        },
+        "deltaY": {
+          "default": 0,
+          "description": "Y delta",
+          "type": "number"
+        }
+      },
+      "required": [
+        "deltaX",
+        "deltaY"
+      ],
+      "type": "object"
+    },
+    "name": "browser_mouse_wheel"
+  },
+  {
+    "description": "Navigate to a URL",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "description": "The URL to navigate to",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "type": "object"
+    },
+    "name": "browser_navigate"
+  },
+  {
+    "description": "Go back to the previous page in the history",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_navigate_back"
+  },
+  {
+    "description": "Returns a numbered list of network requests since loading the page. Use browser_network_request with the number to get full details.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "description": "Filename to save the network requests to. If not provided, requests are returned as text.",
+          "type": "string"
+        },
+        "filter": {
+          "description": "Only return requests whose URL matches this regexp (e.g. \"/api/.*user\").",
+          "type": "string"
+        },
+        "static": {
+          "default": false,
+          "description": "Whether to include successful static resources like images, fonts, scripts, etc. Defaults to false.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "static"
+      ],
+      "type": "object"
+    },
+    "name": "browser_network_requests"
+  },
+  {
+    "description": "Returns full details (headers and body) of a single network request, or a single part if `part` is set. Use the number from browser_network_requests.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "description": "Filename to save the result to. If not provided, output is returned as text.",
+          "type": "string"
+        },
+        "index": {
+          "description": "1-based index of the request, as printed by browser_network_requests.",
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "part": {
+          "description": "Return only this part of the request. Omit to return full details.",
+          "enum": [
+            "request-headers",
+            "request-body",
+            "response-headers",
+            "response-body"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "index"
+      ],
+      "type": "object"
+    },
+    "name": "browser_network_request"
+  },
+  {
+    "description": "Sets the browser network state to online or offline. When offline, all network requests will fail.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "description": "Set to \"offline\" to simulate offline mode, \"online\" to restore network connectivity",
+          "enum": [
+            "online",
+            "offline"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "type": "object"
+    },
+    "name": "browser_network_state_set"
+  },
+  {
+    "description": "Save page as PDF",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "description": "File name to save the pdf to. Defaults to `page-{timestamp}.pdf` if not specified. Prefer relative file names to stay within the output directory.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_pdf_save"
+  },
+  {
+    "description": "Start recording actions that the user performs in the browser as Playwright code. Use it when the user wants to demonstrate a flow manually. Call browser_stop_recording when the user says they are done to retrieve the recorded actions.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_start_recording"
+  },
+  {
+    "description": "Stop the recording started with browser_start_recording and return the recorded actions as Playwright code.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_stop_recording"
+  },
+  {
+    "description": "Set up a route to mock network requests matching a URL pattern",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "body": {
+          "description": "Response body (text or JSON string)",
+          "type": "string"
+        },
+        "contentType": {
+          "description": "Content-Type header (e.g., \"application/json\", \"text/html\")",
+          "type": "string"
+        },
+        "headers": {
+          "description": "Headers to add in \"Name: Value\" format",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pattern": {
+          "description": "URL pattern to match (e.g., \"**/api/users\", \"**/*.{png,jpg}\")",
+          "type": "string"
+        },
+        "removeHeaders": {
+          "description": "Comma-separated list of header names to remove from request",
+          "type": "string"
+        },
+        "status": {
+          "description": "HTTP status code to return (default: 200)",
+          "type": "number"
+        }
+      },
+      "required": [
+        "pattern"
+      ],
+      "type": "object"
+    },
+    "name": "browser_route"
+  },
+  {
+    "description": "List all active network routes",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_route_list"
+  },
+  {
+    "description": "Remove network routes matching a pattern (or all routes if no pattern specified)",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "pattern": {
+          "description": "URL pattern to unroute (omit to remove all routes)",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_unroute"
+  },
+  {
+    "description": "Run a Playwright code snippet. Unsafe: executes arbitrary JavaScript in the Playwright server process and is RCE-equivalent.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "A JavaScript function containing Playwright code to execute. It will be invoked with a single argument, page, which you can use for any page interaction. For example: `async (page) => { await page.getByRole('button', { name: 'Submit' }).click(); return await page.title(); }`",
+          "type": "string"
+        },
+        "filename": {
+          "description": "Load code from the specified file. If both code and filename are provided, code will be ignored.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_run_code_unsafe"
+  },
+  {
+    "description": "Take a screenshot of the current page. You can't perform actions based on the screenshot, use browser_snapshot for actions.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "filename": {
+          "description": "File name to save the screenshot to. Defaults to `page-{timestamp}.{png|jpeg|webp}` if not specified. Prefer relative file names to stay within the output directory.",
+          "type": "string"
+        },
+        "fullPage": {
+          "description": "When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Cannot be used with element screenshots.",
+          "type": "boolean"
+        },
+        "scale": {
+          "default": "css",
+          "description": "Image resolution scale. \"css\" produces a screenshot sized in CSS pixels (smaller, consistent across devices). \"device\" produces a high-resolution screenshot using device pixels (larger, accounts for the device pixel ratio). Default is css.",
+          "enum": [
+            "css",
+            "device"
+          ],
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        },
+        "type": {
+          "description": "Image format for the screenshot. If unset, inferred from the filename extension, otherwise png.",
+          "enum": [
+            "png",
+            "jpeg",
+            "webp"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "scale"
+      ],
+      "type": "object"
+    },
+    "name": "browser_take_screenshot"
+  },
+  {
+    "description": "Capture accessibility snapshot of the current page, this is better than screenshot",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "boxes": {
+          "description": "Include each element's bounding box as [box=x,y,width,height] in the snapshot. Coordinates are viewport-relative, in CSS pixels (Element.getBoundingClientRect)",
+          "type": "boolean"
+        },
+        "depth": {
+          "description": "Limit the depth of the snapshot tree",
+          "type": "number"
+        },
+        "filename": {
+          "description": "Save snapshot to markdown file instead of returning it in the response.",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_snapshot"
+  },
+  {
+    "description": "Perform click on a web page",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "button": {
+          "description": "Button to click, defaults to left",
+          "enum": [
+            "left",
+            "right",
+            "middle"
+          ],
+          "type": "string"
+        },
+        "doubleClick": {
+          "description": "Whether to perform a double click instead of a single click",
+          "type": "boolean"
+        },
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "modifiers": {
+          "description": "Modifier keys to press",
+          "items": {
+            "enum": [
+              "Alt",
+              "Control",
+              "ControlOrMeta",
+              "Meta",
+              "Shift"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "type": "object"
+    },
+    "name": "browser_click"
+  },
+  {
+    "description": "Perform drag and drop between two elements",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "endElement": {
+          "description": "Human-readable target element description used to obtain the permission to interact with the element",
+          "type": "string"
+        },
+        "endTarget": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        },
+        "startElement": {
+          "description": "Human-readable source element description used to obtain the permission to interact with the element",
+          "type": "string"
+        },
+        "startTarget": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "startTarget",
+        "endTarget"
+      ],
+      "type": "object"
+    },
+    "name": "browser_drag"
+  },
+  {
+    "description": "Hover over element on page",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "type": "object"
+    },
+    "name": "browser_hover"
+  },
+  {
+    "description": "Select an option in a dropdown",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        },
+        "values": {
+          "description": "Array of values to select in the dropdown. This can be a single value or multiple values.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "target",
+        "values"
+      ],
+      "type": "object"
+    },
+    "name": "browser_select_option"
+  },
+  {
+    "description": "Generate locator for the given element to use in tests",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description used to obtain permission to interact with the element",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot, or a unique element selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "type": "object"
+    },
+    "name": "browser_generate_locator"
+  },
+  {
+    "description": "Save storage state (cookies, local storage) to a file for later reuse",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "description": "File name to save the storage state to. Defaults to `storage-state-{timestamp}.json` if not specified.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_storage_state"
+  },
+  {
+    "description": "Restore storage state (cookies, local storage) from a file. This clears existing cookies and local storage before restoring.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "description": "Path to the storage state file to restore from",
+          "type": "string"
+        }
+      },
+      "required": [
+        "filename"
+      ],
+      "type": "object"
+    },
+    "name": "browser_set_storage_state"
+  },
+  {
+    "description": "List, create, close, or select a browser tab.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "description": "Operation to perform",
+          "enum": [
+            "list",
+            "new",
+            "close",
+            "select"
+          ],
+          "type": "string"
+        },
+        "index": {
+          "description": "Tab index, used for close/select. If omitted for close, current tab is closed.",
+          "type": "number"
+        },
+        "url": {
+          "description": "URL to navigate to in the new tab, used for new.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "type": "object"
+    },
+    "name": "browser_tabs"
+  },
+  {
+    "description": "Start trace recording",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_start_tracing"
+  },
+  {
+    "description": "Stop trace recording",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_stop_tracing"
+  },
+  {
+    "description": "Verify element is visible on the page",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "accessibleName": {
+          "description": "ACCESSIBLE_NAME of the element. Can be found in the snapshot like this: `- role \"{ACCESSIBLE_NAME}\"`",
+          "type": "string"
+        },
+        "role": {
+          "description": "ROLE of the element. Can be found in the snapshot like this: `- {ROLE} \"Accessible Name\":`",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "accessibleName"
+      ],
+      "type": "object"
+    },
+    "name": "browser_verify_element_visible"
+  },
+  {
+    "description": "Verify text is visible on the page. Prefer browser_verify_element_visible if possible.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "TEXT to verify. Can be found in the snapshot like this: `- role \"Accessible Name\": {TEXT}` or like this: `- text: {TEXT}`",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "type": "object"
+    },
+    "name": "browser_verify_text_visible"
+  },
+  {
+    "description": "Verify list is visible on the page",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable list description",
+          "type": "string"
+        },
+        "items": {
+          "description": "Items to verify",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "target": {
+          "description": "Exact target element reference that points to the list",
+          "type": "string"
+        }
+      },
+      "required": [
+        "element",
+        "target",
+        "items"
+      ],
+      "type": "object"
+    },
+    "name": "browser_verify_list_visible"
+  },
+  {
+    "description": "Verify element value",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "element": {
+          "description": "Human-readable element description",
+          "type": "string"
+        },
+        "target": {
+          "description": "Exact target element reference from the page snapshot",
+          "type": "string"
+        },
+        "type": {
+          "description": "Type of the element",
+          "enum": [
+            "textbox",
+            "checkbox",
+            "radio",
+            "combobox",
+            "slider"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "description": "Value to verify. For checkbox, use \"true\" or \"false\".",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "element",
+        "target",
+        "value"
+      ],
+      "type": "object"
+    },
+    "name": "browser_verify_value"
+  },
+  {
+    "description": "Start video recording",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "description": "Filename to save the video.",
+          "type": "string"
+        },
+        "size": {
+          "additionalProperties": false,
+          "description": "Video size",
+          "properties": {
+            "height": {
+              "description": "Video height",
+              "type": "number"
+            },
+            "width": {
+              "description": "Video width",
+              "type": "number"
+            }
+          },
+          "required": [
+            "width",
+            "height"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_start_video"
+  },
+  {
+    "description": "Stop video recording",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_stop_video"
+  },
+  {
+    "description": "Add a chapter marker to the video recording. Shows a full-screen chapter card with blurred backdrop.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "description": "Chapter description",
+          "type": "string"
+        },
+        "duration": {
+          "description": "Duration in milliseconds to show the chapter card",
+          "type": "number"
+        },
+        "title": {
+          "description": "Chapter title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "type": "object"
+    },
+    "name": "browser_video_chapter"
+  },
+  {
+    "description": "Annotate subsequent actions performed on the page with a callout that names the action and highlights the target element. Useful while video recording or screencasting.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "description": "Cursor decoration for pointer actions. \"pointer\" (default) animates a mouse pointer from the previous action point to the next one; \"none\" disables the cursor decoration.",
+          "enum": [
+            "none",
+            "pointer"
+          ],
+          "type": "string"
+        },
+        "duration": {
+          "description": "How long each action annotation stays on screen, in milliseconds. Defaults to 500.",
+          "type": "number"
+        },
+        "position": {
+          "description": "Where to place the action title relative to the page. Defaults to top-right.",
+          "enum": [
+            "top-left",
+            "top",
+            "top-right",
+            "bottom-left",
+            "bottom",
+            "bottom-right"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_video_show_actions"
+  },
+  {
+    "description": "Stop annotating actions performed on the page.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_video_hide_actions"
+  },
+  {
+    "description": "Wait for text to appear or disappear or a specified time to pass",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "The text to wait for",
+          "type": "string"
+        },
+        "textGone": {
+          "description": "The text to wait for to disappear",
+          "type": "string"
+        },
+        "time": {
+          "description": "The time to wait in seconds",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "name": "browser_wait_for"
+  },
+  {
+    "description": "List all localStorage key-value pairs",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_localstorage_list"
+  },
+  {
+    "description": "Get a localStorage item by key",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Key to get",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "name": "browser_localstorage_get"
+  },
+  {
+    "description": "Set a localStorage item",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Key to set",
+          "type": "string"
+        },
+        "value": {
+          "description": "Value to set",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "type": "object"
+    },
+    "name": "browser_localstorage_set"
+  },
+  {
+    "description": "Delete a localStorage item",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Key to delete",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "name": "browser_localstorage_delete"
+  },
+  {
+    "description": "Clear all localStorage",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_localstorage_clear"
+  },
+  {
+    "description": "List all sessionStorage key-value pairs",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_sessionstorage_list"
+  },
+  {
+    "description": "Get a sessionStorage item by key",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Key to get",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "name": "browser_sessionstorage_get"
+  },
+  {
+    "description": "Set a sessionStorage item",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Key to set",
+          "type": "string"
+        },
+        "value": {
+          "description": "Value to set",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "type": "object"
+    },
+    "name": "browser_sessionstorage_set"
+  },
+  {
+    "description": "Delete a sessionStorage item",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Key to delete",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "name": "browser_sessionstorage_delete"
+  },
+  {
+    "description": "Clear all sessionStorage",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "name": "browser_sessionstorage_clear"
+  }
+]

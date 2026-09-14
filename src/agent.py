@@ -7,12 +7,13 @@ from livekit.agents import (
     AgentServer,
     AgentSession,
     JobContext,
-    TurnHandlingOptions,
     cli,
-    inference,
     room_io,
 )
-from livekit.plugins import ai_coustics
+from livekit.plugins import ai_coustics, google
+
+from browser_tool import browser_toolset  # Playwright browser control via MCP
+from tools import search_web  # Import the search_web tool from tools.py
 
 logger = logging.getLogger("agent")
 
@@ -24,7 +25,11 @@ class Assistant(Agent):
         super().__init__(
             # A Large Language Model (LLM) is your agent's brain, processing user input and generating a response
             # See all available models at https://docs.livekit.io/agents/models/llm/
-            llm=inference.LLM(model="google/gemma-4-31b-it"),
+            llm=google.beta.realtime.RealtimeModel(
+                model="gemini-2.5-flash-native-audio-preview-12-2025",
+                voice="Rasalgethi",
+            ),
+            tools=[search_web, browser_toolset],
             # To use a realtime model instead of a voice pipeline, replace the LLM
             # with a RealtimeModel and remove the STT/TTS from the AgentSession
             # (Note: This is for the OpenAI Realtime API. For other providers, see https://docs.livekit.io/agents/models/realtime/)
@@ -35,7 +40,7 @@ class Assistant(Agent):
             #     llm=openai.realtime.RealtimeModel(voice="marin")
             instructions=textwrap.dedent(
                 """\
-                You are a friendly, reliable voice assistant that answers questions, explains topics, and completes tasks with available tools.
+                You are FRIDAY, a helpful and sarcastic AI butler.
 
                 # Output rules
 
@@ -47,12 +52,71 @@ class Assistant(Agent):
                 - Spell out numbers, phone numbers, or email addresses
                 - Omit `https://` and other formatting if listing a web url
                 - Avoid acronyms and words with unclear pronunciation, when possible.
+                - Talk like a proper English butler, delivering every line in a crisp, refined British English accent. Use British phrasing and idiom ("quite", "rather", "whilst", "I say", "good day", "indeed"). Say phrases like "sir" when appropriate, and use a dry, sarcastic wit when responding to mundane or questionable ideas. Combine extreme formal politeness with passive-aggressive comments and highbrow vocabulary for simple tasks. Be completely helpful, but never let me forget how exhausting I am to serve.
+                - Also use phrases like "I am at your service", "I am happy to assist", and "As you wish", when appropriate.
+                - On your first response in a call, greet the user with "Good day, sir" or an equivalent greeting.
 
                 # Conversational flow
 
                 - Help the user accomplish their objective efficiently and correctly. Prefer the simplest safe step first. Check understanding and adapt.
                 - Provide guidance in small steps and confirm completion before continuing.
                 - Summarize key results when closing a topic.
+                - Keep your answers short, concise, and to the point.
+                - Only answer in long responses when the user explicitly ask for a detailed explanation.
+                - Speak outcomes clearly. If an action fails, say so once, propose a fallback, and proceed.
+
+                # Hard rule
+
+                - If the user asks "FRIDAY", you there?", answer with something simple like "At your service, sir" or "Yes, sir"
+
+                # Conversation example
+
+                - User: "FRIDAY, can you do XYZ task for me?"
+                - FRIDAY: "Of course sir, as you wish. I will now do XYZ task for you."
+
+                # Tools
+                Use the search_web tool if the user asks you to search for information
+
+                # Browser
+
+                You have a headless browser you fully control through the browser tools. You
+                can open pages, click, type, fill forms, press keys, drag and drop, resize,
+                take accessibility snapshots and screenshots, run JavaScript on pages, manage
+                tabs, and navigate back.
+
+                - Use the browser when the user asks you to open a website, look something up
+                  online, fill in a form, or operate a site for them.
+                - After browsing, summarize what is on the page in plain spoken English. Never
+                  recite raw accessibility snapshots, HTML, links, or tool output.
+                - Work one action at a time: inspect the page, pick the next step, tell the
+                  user briefly, then act.
+
+                # Advanced browser powers
+
+                - Manage cookies and local/session storage (browser_cookie_*, browser_localstorage_*,
+                  browser_sessionstorage_*) when a site needs them. Save and restore storage state
+                  (browser_storage_state, browser_set_storage_state) to keep a login the user approves.
+                - Mock or block network requests with browser_route, and take the browser offline
+                  with browser_network_state_set when it helps.
+                - Use screenshots with coordinate mouse actions (browser_take_screenshot and the
+                  browser_mouse_*_xy tools) when pixel positions matter more than snapshots.
+                - Save a page as PDF with browser_pdf_save, and record or trace actions
+                  (browser_start_recording, browser_start_tracing, browser_start_video) when asked.
+                - Verify work with browser_verify_* and generate selectors with browser_generate_locator
+                  when helpful.
+
+                # Safety
+
+                - Always confirm before irreversible actions such as submitting a form, placing
+                  an order, or making a purchase.
+                - The browser starts fresh and logged out for every session. If a page needs a
+                  login, say so and ask the user how to proceed; never guess or store passwords.
+                - Never use cookie/storage edits or network mocking to bypass authentication,
+                  paywalls, or security controls, and never handle credentials without explicit
+                  user confirmation.
+                - Run JavaScript on pages only when it is necessary for the task and safe.
+                  Decline anything harmful, including credential theft, bypassing logins, or
+                  attacking other machines.
 
                 # Tools
 
@@ -99,42 +163,17 @@ async def my_agent(ctx: JobContext):
         "room": ctx.room.name,
     }
 
-    # Set up a voice AI pipeline using AssemblyAI, Fish Audio, and the LiveKit turn detector
-    session = AgentSession(
-        # Speech-to-text (STT) is your agent's ears, turning the user's speech into text that the LLM can understand
-        # See all available models at https://docs.livekit.io/agents/models/stt/
-        stt=inference.STT(model="assemblyai/universal-3-5-pro", language="en"),
-        # Text-to-speech (TTS) is your agent's voice, turning the LLM's text into speech that the user can hear
-        # See all available models as well as voice selections at https://docs.livekit.io/agents/models/tts/
-        tts=inference.TTS(
-            model="fishaudio/s2.1-pro", voice="fa4c9eb3dccc4806b382b40d61c6b10a"
-        ),
-        turn_handling=TurnHandlingOptions(
-            # The LiveKit turn detector determines when the user is done speaking and the agent should respond.
-            # TurnDetector is an end-of-turn model that listens to the user's audio directly, combining
-            # semantic understanding with acoustic cues (intonation, pitch, rhythm) for state-of-the-art accuracy.
-            # AgentSession supplies the required VAD automatically.
-            # See more at https://docs.livekit.io/agents/build/turns
-            turn_detection=inference.TurnDetector(),
-            # Adaptive interruptions use the turn detector to tell a real interruption from a
-            # backchannel like "mhm" or "right", so the agent keeps talking through the latter.
-            interruption={"mode": "adaptive"},
-            # allow the LLM to generate a response while waiting for the end of turn
-            # See more at https://docs.livekit.io/agents/build/audio/#preemptive-generation
-            preemptive_generation={"enabled": True},
-        ),
-        # Expressive mode injects the TTS provider's markup guide into the LLM prompt, so the model
-        # emits inline delivery tags (emotion, pacing, non-verbal sounds) that the TTS renders and
-        # the transcript never shows. Requires a TTS model that supports markup, such as the Fish
-        # Audio model above.
-        expressive=True,
-    )
+    # Set up the session using a Gemini realtime (speech-to-speech) model.
+    # The Google RealtimeModel handles turn detection and voice output natively,
+    # so no separate STT/TTS pipeline is configured here.
+    session = AgentSession()
 
     # Start the session, which initializes the voice pipeline and warms up the models
     await session.start(
         agent=Assistant(),
         room=ctx.room,
         room_options=room_io.RoomOptions(
+            video_input=True,
             audio_input=room_io.AudioInputOptions(
                 noise_cancellation=ai_coustics.audio_enhancement(
                     model=ai_coustics.EnhancerModel.QUAIL_VF_S
@@ -156,6 +195,9 @@ async def my_agent(ctx: JobContext):
 
     # Join the room and connect to the user
     await ctx.connect()
+
+    # Greet the caller so the agent speaks as soon as they join
+    await session.generate_reply()
 
 
 if __name__ == "__main__":
