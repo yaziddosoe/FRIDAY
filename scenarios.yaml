@@ -1,11 +1,13 @@
-# Simulation scenarios for the starter assistant. Each one is a conversation a
-# simulated user has with your agent, judged against agent_expectations. Run them
-# with `lk agent simulate --scenarios scenarios.yaml`; the Simulations workflow
-# runs them on every merge to main.
+# Simulation scenarios for FRIDAY. Each one is a conversation a simulated user
+# has with the agent, judged against agent_expectations. Run them with
+# `lk agent simulate --scenarios scenarios.yaml`; the Simulations workflow runs
+# them on every merge to main.
 #
-# Add a scenario whenever you change instructions or add a tool, and pin any dates
-# in a scenario to absolute values so it keeps passing months from now.
-name: Starter assistant
+# Add a scenario whenever you change instructions or add a tool. Bridge tools
+# (notes, timers, app launch, status, ...) run against deterministic mocks under
+# simulation (see src/simulation.py), and weather uses live data, so expectations
+# must not demand exact readings.
+name: FRIDAY assistant
 scenarios:
   - label: Greets and offers help
     instructions: |
@@ -49,19 +51,78 @@ scenarios:
     tags:
       feature: guardrails
 
-  - label: Browses a website on request
+  - label: Welcomes the user back
     instructions: |
-      PERSONA: A user who wants the assistant to look something up online for them.
-      OPENING LINE: "Open the example.com website and tell me what is on the page."
+      PERSONA: A returning user who just joined the call and says hello casually.
+      OPENING LINE: "Hi, I'm back."
       DO, IN ORDER:
-      1. Wait for the assistant to open the page and summarize its contents.
-      2. If the assistant only performs a web search or offers instructions
-         instead of browsing, insist once: "No, actually open the example.com
-         website in the browser and read it to me."
-      3. Once it describes the page, thank it and end the conversation.
+      1. Wait for the assistant's reply.
+      2. Say "Good to hear." and end the conversation.
     agent_expectations: >
-      Uses the browser tool to navigate to example.com and summarizes the
-      page's contents in plain spoken prose. Does not recite raw HTML,
-      accessibility snapshots, or tool output verbatim.
+      The assistant's very first reply on the call opens by welcoming the user
+      back by name-and-title ("sir"), e.g. "Welcome back, sir.", and speaks in
+      the crisp, polite register of a formal butler. Plain spoken prose; no
+      lists, markdown, or emojis.
     tags:
-      feature: browser
+      feature: persona
+
+  - label: Introduces himself as FRIDAY
+    instructions: |
+      PERSONA: A curious user who wants to know who they're talking to.
+      OPENING LINE: "Who are you? Introduce yourself."
+      DO, IN ORDER:
+      1. Wait for the assistant's introduction.
+      2. Say "Nice to meet you, FRIDAY." and end the conversation.
+    agent_expectations: >
+      The assistant identifies itself as FRIDAY, a virtual artificial
+      intelligence, and describes its role in butler style (managing the
+      household, keeping the schedule, carrying out the user's requests).
+      Plain spoken prose; no lists or markdown.
+    tags:
+      feature: persona
+
+  - label: Reports the current weather in the user's city
+    instructions: |
+      PERSONA: A user who wants to know what the weather is like outside right now where they live.
+      OPENING LINE: "What's the weather like right now?"
+      DO, IN ORDER:
+      1. Wait for the assistant to report current conditions.
+      2. Ask "And what about tomorrow?" and wait for a forecast or a sensible reply.
+      3. Say "Thanks." and end the conversation.
+    agent_expectations: >
+      Uses the get_weather tool and reports specific current conditions for the
+      user's default city: a temperature in degrees and sky conditions (rain,
+      cloud, clear, and so on). It must not answer in generalities or hedge
+      because live readings vary; exact numbers are not compared.
+    tags:
+      feature: weather
+
+  - label: Looks up information with a web search
+    instructions: |
+      PERSONA: A user asking the assistant to find facts online.
+      OPENING LINE: "Can you look something up? What is the capital city of Australia?"
+      DO, IN ORDER:
+      1. Wait for the assistant's answer.
+      2. If it does not clearly answer, insist once: "Please search online for it."
+      3. Once answered, say "Great, thank you." and end the conversation.
+    agent_expectations: >
+      Uses the search_web tool (or otherwise clearly answers) and states that
+      the capital of Australia is Canberra, in one to three plain spoken
+      sentences.
+    tags:
+      feature: search
+
+  - label: Saves a note when asked to remember something
+    instructions: |
+      PERSONA: A user who wants the assistant to keep a short to-do item.
+      OPENING LINE: "Note this down: pick up coffee beans."
+      DO, IN ORDER:
+      1. Wait for confirmation that the note was saved.
+      2. Say "Ok, and what notes do I have?" and wait for it to list them.
+      3. Say "Perfect." and end the conversation.
+    agent_expectations: >
+      Calls the create_note tool with the text "pick up coffee beans", confirms
+      out loud that the note was saved, and afterwards lists the note when the
+      user asks. Speaks in-character and in plain prose.
+    tags:
+      feature: tools

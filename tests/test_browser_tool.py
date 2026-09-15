@@ -165,6 +165,24 @@ def test_tool_name_extraction() -> None:
     assert _tool_name(object()) == ""  # type: ignore[arg-type]
 
 
+async def test_setup_failure_degrades_to_empty_toolset(monkeypatch) -> None:
+    # A browser subprocess crash must never take the voice session down: if the
+    # Playwright MCP server can't start, setup() swallows the error and exposes
+    # an empty toolset so FRIDAY still comes up and talks.
+    toolset = PlaywrightBrowserToolset()
+
+    async def _fail_to_start() -> None:
+        raise RuntimeError("simulated npx crash")
+
+    monkeypatch.setattr(toolset._mcp_server, "initialize", _fail_to_start)
+
+    result = await toolset.setup()
+
+    assert result is toolset
+    assert toolset._tools == []
+    assert toolset._initialized is False
+
+
 def test_filter_tools_respects_allowlist() -> None:
     toolset = PlaywrightBrowserToolset(
         allowed_tools={"browser_navigate", "browser_click"}

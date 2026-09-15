@@ -9,8 +9,12 @@ tabs, and more).
 
 from __future__ import annotations
 
+import logging
+
 from livekit.agents import mcp
 from typing_extensions import Self
+
+logger = logging.getLogger(__name__)
 
 BROWSER_TOOLSET_ID = "browser"
 
@@ -321,7 +325,20 @@ class PlaywrightBrowserToolset(mcp.MCPToolset):
         self.server: PlaywrightMCPServer = server
 
     async def setup(self, *, reload: bool = False) -> Self:
-        toolset = await super().setup(reload=reload)
+        # The browser is a strictly optional capability. If the Playwright MCP
+        # server cannot start (missing npx cache, flaky network, disk pressure,
+        # dead subprocess), swallow the failure so the voice session still comes
+        # up and FRIDAY can talk; the browser tools just stay unavailable.
+        try:
+            toolset = await super().setup(reload=reload)
+        except Exception as exc:
+            logger.warning(
+                "Playwright MCP server failed to start; browser tools disabled "
+                "for this session: %s",
+                exc,
+            )
+            return self
+
         self.filter_tools(lambda tool: _tool_name(tool) in self._allowed_tools)
         for tool in self._tools:
             if not isinstance(tool, mcp.MCPTool):

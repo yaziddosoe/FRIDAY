@@ -19,6 +19,9 @@ jobs:
       LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
       LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
       LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+      # The agent uses a Google Gemini realtime model; without the key the
+      # simulation worker cannot authenticate.
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
     steps:
     - uses: actions/checkout@v6
@@ -36,11 +39,8 @@ jobs:
     - name: Install dependencies
       run: UV_GIT_LFS=1 uv sync
 
-    - name: Download model files
-      run: uv run python src/agent.py download-files
-
     - name: Install LiveKit CLI
       run: curl -sSL https://get.livekit.io/cli | bash
 
     - name: Run simulations
-      run: lk agent simulate --scenarios scenarios.yaml
+      run: lk agent simulate --scenarios scenarios.yaml --concurrency 5
