@@ -22,6 +22,10 @@ def build_bridge_mocks(userdata: dict[str, Any] | None = None) -> MockSet:
     ``userdata`` (from the scenario) may supply deterministic state:
 
     - ``notes``: list of note strings that exist at the start of the run.
+    - ``timers``: list of timer dicts (each with ``label`` and ``minutes``) that
+      exist at the start of the run; ``id`` is assigned in order.
+    - ``reminders``: list of reminder dicts (each with ``label`` and ``at``) that
+      exist at the start of the run; ``id`` is assigned in order.
     - ``launch_result``: the exact string returned by ``launch_app``.
     - ``status``: dict overriding the reported machine status fields.
     - ``file_matches``: list of paths returned by ``search_files``.
@@ -37,8 +41,11 @@ def build_bridge_mocks(userdata: dict[str, Any] | None = None) -> MockSet:
     """
     userdata = userdata or {}
     notes: list[str] = list(userdata.get("notes") or [])
-    timers: list[dict[str, Any]] = []
-    reminders: list[dict[str, Any]] = []
+    timers: list[dict[str, Any]] = [
+        {"id": timer.get("id", index + 1), **timer}
+        for index, timer in enumerate(userdata.get("timers") or [])
+    ]
+    reminders: list[dict[str, Any]] = list(userdata.get("reminders") or [])
     status = userdata.get("status") or {}
 
     def get_system_status(_context: object) -> str:

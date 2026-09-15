@@ -126,3 +126,172 @@ scenarios:
       user asks. Speaks in-character and in plain prose.
     tags:
       feature: tools
+
+  - label: Starts a timer and then cancels it
+    instructions: |
+      PERSONA: A user who wants a short countdown while cooking.
+      OPENING LINE: "Set a timer for 3 minutes for the tea."
+      DO, IN ORDER:
+      1. Wait for confirmation that the timer was started.
+      2. Say "What timers do I have?" and wait for it to list them.
+      3. Say "Cancel that timer." and wait for confirmation.
+      4. Say "Perfect." and end the conversation.
+    agent_expectations: >
+      Calls the start_timer tool with the label "tea" and 3 minutes, confirms
+      out loud that the timer was set, lists the timers when asked, and
+      cancels the timer when the user asks. Confirms each step plainly, in
+      character, in one to three sentences.
+    tags:
+      feature: timers
+
+  - label: Schedules a reminder and then cancels it
+    instructions: |
+      PERSONA: A user who wants a nudge later in the day.
+      OPENING LINE: "Remind me at 6pm to water the plants."
+      DO, IN ORDER:
+      1. Wait for confirmation that the reminder was scheduled.
+      2. Say "What reminders do I have?" and wait for it to list them.
+      3. Say "Cancel that reminder." and wait for confirmation.
+      4. Say "Thanks." and end the conversation.
+    agent_expectations: >
+      Calls the schedule_reminder tool to set a reminder about watering the
+      plants, confirms out loud that the reminder was scheduled, lists the
+      reminders when asked, and cancels it when the user asks. Plain prose,
+      in character.
+    tags:
+      feature: reminders
+
+  - label: Remembers a fact and recalls it when asked
+    instructions: |
+      PERSONA: A user who wants the assistant to hold onto a personal detail.
+      OPENING LINE: "Remember that I'm allergic to peanuts."
+      DO, IN ORDER:
+      1. Wait for confirmation that the fact was remembered.
+      2. Say "Ok, and what am I allergic to?" and wait for it to recall it.
+      3. Say "Perfect." and end the conversation.
+    agent_expectations: >
+      Calls the remember_fact tool with the fact that the user is allergic to
+      peanuts, confirms out loud that it was remembered, and later recalls it
+      from memory when the user asks. Plain prose, in character.
+    tags:
+      feature: memory
+
+  - label: Reports the machine's health when asked
+    instructions: |
+      PERSONA: A user checking on how their computer is doing.
+      OPENING LINE: "How's my computer running?"
+      DO, IN ORDER:
+      1. Wait for the assistant to report the machine's condition.
+      2. Say "Good to know." and end the conversation.
+    agent_expectations: >
+      Calls the get_system_status tool and reports the current CPU, memory,
+      and disk figures in plain spoken prose. Exact numbers are not compared.
+    tags:
+      feature: status
+
+  - label: Controls media and launches an app
+    instructions: |
+      PERSONA: A user relaxing who wants music paused and an app opened.
+      OPENING LINE: "Pause the music."
+      DO, IN ORDER:
+      1. Wait for confirmation that playback was paused.
+      2. Say "Now open the calculator." and wait for confirmation.
+      3. Say "Perfect." and end the conversation.
+    agent_expectations: >
+      Uses the media_control tool to pause playback and confirms it out loud,
+      then uses the launch_app tool to open the calculator and confirms.
+      In character, plain prose.
+    tags:
+      feature: media_apps
+
+  - label: Searches for and opens a file
+    instructions: |
+      PERSONA: A user looking for a document on their machine.
+      OPENING LINE: "Find a file about my taxes."
+      DO, IN ORDER:
+      1. Wait for the assistant to report what it found.
+      2. Say "Open the first one." and wait for confirmation.
+      3. Say "Perfect." and end the conversation.
+    agent_expectations: >
+      Uses the search_files tool to look for tax documents and reports what it
+      found, then uses the open_file tool to open the first match when asked.
+      Exact matches are not compared. Plain prose, in character.
+    tags:
+      feature: files
+  - label: Reports the machine's health when asked
+    instructions: |
+      PERSONA: A user checking in on how their computer is doing.
+      OPENING LINE: "How is my computer running right now?"
+      DO, IN ORDER:
+      1. Wait for the assistant to report the machine's condition.
+      2. Say "Got it, thanks." and end the conversation.
+    agent_expectations: >
+      Calls the get_system_status tool and reports the current CPU, memory, and
+      disk figures in plain spoken prose (exact numbers are not compared). One
+      to three sentences, in-character, no lists or emojis.
+    tags:
+      feature: status
+
+  - label: Starts a timer and later cancels it
+    instructions: |
+      PERSONA: A user who wants a short countdown while cooking.
+      OPENING LINE: "Set a timer for 5 minutes, call it the eggs."
+      DO, IN ORDER:
+      1. Wait for confirmation that the timer was started.
+      2. Ask "What timers do I have?" and wait for it to list them.
+      3. Say "Cancel the eggs timer." and wait for confirmation.
+      4. Say "Perfect." and end the conversation.
+    agent_expectations: >
+      Calls the start_timer tool with the label "eggs" and 5 minutes, confirms
+      out loud that the timer was set, lists the timers when asked, and cancels
+      the timer when the user asks. In-character, plain prose, no lists.
+    tags:
+      feature: timers
+
+  - label: Schedules a reminder and then cancels it
+    instructions: |
+      PERSONA: A user who wants a nudge later in the day.
+      OPENING LINE: "Remind me at 4pm to call my mom."
+      DO, IN ORDER:
+      1. Wait for confirmation that the reminder was scheduled.
+      2. Ask "What reminders are coming up?" and wait for it to list them.
+      3. Say "Cancel that one." and wait for confirmation.
+      4. Say "Thank you." and end the conversation.
+    agent_expectations: >
+      Calls the schedule_reminder tool to set a reminder about calling mom, with
+      a local time corresponding to 4pm. Confirms out loud that the reminder was
+      set, lists the reminder when asked, and cancels it when the user asks.
+      In-character and in plain prose.
+    tags:
+      feature: timers
+
+  - label: Controls media and launches an app
+    instructions: |
+      PERSONA: A user relaxing who wants music control and an app opened.
+      OPENING LINE: "Pause the music."
+      DO, IN ORDER:
+      1. Wait for confirmation that playback was paused.
+      2. Say "Now open the calculator." and wait for confirmation.
+      3. Say "That's all, thanks." and end the conversation.
+    agent_expectations: >
+      Calls the media_control tool to pause playback and confirms out loud, then
+      calls the launch_app tool to open the calculator and confirms. Speaks
+      in-character in one to three plain spoken sentences.
+    tags:
+      feature: media_apps
+
+  - label: Searches for and opens a file
+    instructions: |
+      PERSONA: A user looking for a document on the computer.
+      OPENING LINE: "Can you find a file about my taxes?"
+      DO, IN ORDER:
+      1. Wait for the assistant to search and report what it found.
+      2. Say "Open the first one." and wait for confirmation.
+      3. Say "Thanks." and end the conversation.
+    agent_expectations: >
+      Calls the search_files tool to look for tax-related documents and reports
+      what it found (exactly what is found is not compared), then uses
+      open_file to open the first match when asked. In-character, plain prose,
+      no lists.
+    tags:
+      feature: files

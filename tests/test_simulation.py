@@ -85,3 +85,23 @@ def test_screenshot_files_and_media() -> None:
 
 def test_empty_search_is_friendly() -> None:
     assert "Nothing named" in build_bridge_mocks()["search_files"](CTX, "nothing-here")
+
+
+def test_timers_and_reminders_seed_from_userdata() -> None:
+    mocks = build_bridge_mocks(
+        {
+            "timers": [{"label": "tea", "minutes": 3}],
+            "reminders": [{"label": "call mum", "at": "2026-09-16T09:00:00"}],
+        }
+    )
+    assert "tea" in mocks["list_timers"](CTX)
+    assert "call mum" in mocks["list_reminders"](CTX)
+    assert mocks["cancel_timer"](CTX, 1) == "Cancelled timer 1."
+    assert "no reminder" in mocks["cancel_reminder"](CTX, 2)
+
+
+def test_seeded_timers_get_ordered_ids() -> None:
+    mocks = build_bridge_mocks({"timers": [{"label": "tea", "minutes": 3}]})
+    assert mocks["cancel_timer"](CTX, 1) == "Cancelled timer 1."
+    assert "no running timer" in mocks["cancel_timer"](CTX, 1)
+    assert "No timers" in mocks["list_timers"](CTX)
